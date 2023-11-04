@@ -1,84 +1,273 @@
 //Setting up packages needed for this application
-const inquirer = require('inquirer')
-const fs = require('fs');
-const markdown = require('./utils/generateMarkdown')
+const inquirer = require("inquirer");
+const fs = require("fs");
+const {} = require("./utils/Database_Queries.js");
+
+const express = require("express");
+// Import and require mysql2
+const mysql = require("mysql2");
+
+const PORT = process.env.PORT || 3004;
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// Connect to database
+const db = mysql.createConnection(
+  {
+    host: "localhost",
+    // MySQL username,
+    user: "root",
+    // MySQL password
+    password: "Remembrall23**",
+    database: "EmployeeTracker_db",
+  },
+  console.log(`Connected to the EmployeeTracker_db database.`)
+);
 
 //let answers = []
+//adding in dummy testing data to test functionality
+let dataD = {
+  first_name: "A",
+  last_name: "Rod",
+  role_id: 2,
+  manager_id: 2,
+};
+
+let dataU = {
+  role_id: 1,
+  employee_id: 8,
+};
+
+function addEmployee(data) {
+  db.query(
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${data.first_name}", "${data.last_name}", ${data.role_id}, NULL `
+  );
+  db.query("SELECT * FROM employee", function (err, results) {
+    console.log(results);
+  });
+}
+
+function updateEmployee(data) {
+  db.query(
+    `UPDATE employee SET role_id = ${data.role_id} WHERE id = ${data.employee_id};`
+  );
+  db.query(
+    "SELECT * FROM employee WHERE id=?",
+    data.employee_id,
+    function (err, results) {
+      console.log(results);
+    }
+  );
+}
+
+function viewRoles(data) {
+  db.query("SELECT title FROM roles", function (err, results) {
+    console.log(results);
+    const roles = results;
+  });
+}
+
+function viewEmployees() {
+  db.query(
+    "SELECT first_name, last_name FROM employee",
+    function (err, results) {
+      console.log(results);
+    }
+  );
+}
+//addEmployee(dataD)
+//updateEmployee (dataU)
+viewRoles();
+viewEmployees();
 
 //Creating an array of questions for user input
-const questions = inquirer
-    .prompt([
-        {
-            type: 'list',
-            message: 'What license are you using?',
-            choices: ['MIT', "Apache", "Eclipse", "GPLv3", "GPL", "Mozilla", "Perl", "N/A"],
-            name: 'license'
-        },
-        {
-            type: 'input',
-            message: 'What is your project title?',
-            name: 'title'
-        },
-        {
-            type: 'input',
-            message: 'Give a brief project description',
-            name: 'description'
-        },
-        {
-            type: 'input',
-            message: 'Describe any specific installation instructions/Requirements?',
-            name: 'instructions'
-        },
-        {
-            type: 'input',
-            message: 'What is your project used for?',
-            name: 'usage'
-        },
-        {
-            type: 'input',
-            message: 'List out guidelines/requirements for future contributors',
-            name: 'contributors'
-        },
-        {
-            type: 'input',
-            message: 'Specify any code tests',
-            name: 'tests'
-        },
-        {
-            type: 'input',
-            message: 'GitHub username?',
-            name: 'github'
-        },
-        {
-            type: 'input',
-            message: 'Email address?',
-            name: 'email'
-        }])
-    .then((data) => (
-        answers = data,
-        console.log(answers)));
+function displayMenu() {
+  let roles = db.query("SELECT title FROM roles");
+  let employees = db.query("SELECT first_name, last_name FROM employee");
+  let departments = db.query("SELECT name FROM department");
 
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "What would you like to do?",
+        choices: [
+          "View Employees",
+          "Add Employee",
+          "Update Employee Role",
+          "View Departments",
+          "Add Department",
+          "View Roles",
+          "Add Role",
+          "Quit",
+        ],
+        name: "task",
+      },
+      {
+        type: "input",
+        name: "first_name",
+        message: "Employee first name?",
+        when: (answers) => answers.menuOption === "Add Employee",
+        validate: (input) => {
+          if (input.trim() === "") {
+            return "Please enter a value.";
+          }
+          return true;
+        },
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "Employee last name?",
+        when: (answers) => answers.menuOption === "Add Employee",
+        validate: (input) => {
+          if (input.trim() === "") {
+            return "Please enter a value.";
+          }
+          return true;
+        },
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "Employee role?",
+        when: (answers) => answers.menuOption === "Add Employee",
+        choices: [roles],
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "Manager?",
+        when: (answers) => answers.menuOption === "Add Employee",
+        choices: [employees],
+      },
+      {
+        type: "input",
+        name: "Department_name",
+        message: "Department name?",
+        when: (answers) => answers.menuOption === "Add Department",
+        validate: (input) => {
+          if (input.trim() === "") {
+            return "Please enter a value.";
+          }
+          return true;
+        },
+      },
+      {
+        type: "input",
+        name: "Title",
+        message: "Title of role?",
+        when: (answers) => answers.menuOption === "Add Role",
+        validate: (input) => {
+          if (input.trim() === "") {
+            return "Please enter a value.";
+          }
+          return true;
+        },
+      },
+      {
+        type: "input",
+        name: "Salary",
+        message: "Salary?",
+        when: (answers) => answers.menuOption === "Add Role",
+        validate: (input) => {
+          if (input.trim() === "") {
+            return "Please enter a value.";
+          }
+          return true;
+        },
+      },
+      {
+        type: "list",
+        name: "Role_Department",
+        message: "Department?",
+        when: (answers) => answers.menuOption === "Add Role",
+        choices: [departments],
+      },
+      {
+        type: "list",
+        name: "updatedRole",
+        message: "?",
+        when: (answers) => answers.menuOption === "Add Role",
+        choices: [roles],
+      },
+      {
+        type: "list",
+        name: "employeeUpdating",
+        message: "?",
+        when: (answers) => answers.menuOption === "Add Role",
+        choices: [employees],
+      },
+    ])
+    .then((answers) => {
+      const selectedOption = answers.menuOption;
+
+      // Handle the selected option
+      switch (selectedOption) {
+        case "Add Employee":
+          queries.addEmployee;
+          console.log("Input 1:", answers.input1);
+          break;
+        case "View Employees":
+            queries.viewEmployees
+          console.log("You selected Option 2");
+          console.log("Input 2:", answers.input2);
+          break;
+        case "View Role":
+          console.log("You selected Option 1");
+          console.log("Input 1:", answers.input1);
+          break;
+        case "Add Roles":
+          console.log("You selected Option 2");
+          console.log("Input 2:", answers.input2);
+          break;
+        case "View Departments":
+          console.log("You selected Option 1");
+          console.log("Input 1:", answers.input1);
+          break;
+        case "Add Departments":
+          console.log("You selected Option 2");
+          console.log("Input 2:", answers.input2);
+          break;
+          case "Update Role":
+          console.log("You selected Option 2");
+          console.log("Input 2:", answers.input2);
+          break;
+        case "Quit":
+          console.log("Goodbye!");
+          return;
+      }
+
+      // After handling the selected option, display the menu again
+      displayMenu();
+    });
+}
+
+// Start the menu
+displayMenu();
 
 //function to write output to README file
 function writeFile(answers) {
-    fileName = answers.title + 'README.md'
-    writeText = markdown(answers),
+  fileName = answers.title + "README.md";
+  (writeText = markdown(answers)),
     //console to test code
-    console.log(fileName)
-    console.log(writeText)
+    console.log(fileName);
+  console.log(writeText);
 
-    fs.writeFile(fileName, writeText, (err) =>
-        err ? console.error(err) : console.log('Professional README created!')
-    )
-};
-
+  fs.writeFile(fileName, writeText, (err) =>
+    err ? console.error(err) : console.log("Professional README created!")
+  );
+}
 
 //function to initialize app
 //source for async function fix for command line: https://stackoverflow.com/questions/62860243/inquirer-prompt-exiting-without-an-answer
 async function init() {
-    const port = process.env.PORT || 3001
-    await questions
-    writeFile(answers)
+  const port = process.env.PORT || 3001;
+  await questions;
+  writeFile(answers);
 }
 
 // Function call to initialize app

@@ -10,7 +10,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "inquirer": "^8.2.4",
-    "mysql2": "^2.2.5"
+    "mysql2": "^3.6.3",
+    "express": "4.18.2"
   },
   "repository": {
     "type": "git",

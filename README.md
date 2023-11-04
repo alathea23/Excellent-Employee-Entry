@@ -1,46 +1,41 @@
-# Rapid README Renderer
+#  
+
+  ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
   ## Description:
   
-A quick and professional README creator for busy software professionals
+  
 
   ## Table of Contents:
   * [Installation](#installation)
-  * [Video Demo](#video)
+  * [Usage](#usage)
   * [License](#license)
-  * [Contributors](#contributors)
+  * [Contributing](#contributing)
   * [Tests](#tests)
   * [Questions](#questions)
   
 ## Installation:
 
-requires: Node.js and inquirerer8.2.4 before running through terminal
+N/A
 
-## Video
+## Usage:
 
-[Demo](./assets/READMEdemo.webm)
-
-[Video Link](https://drive.google.com/file/d/1Xxp8j6AdgNrIeRQUJNF2JAIDXPmTYImt/view)
+See Description
 
 ## License:
 
-N/A
+This application is covered under [MIT]((https://opensource.org/licenses/MIT))
+(https://opensource.org/licenses/MIT)
 
-## Contributors:
+## Contributing:
 
-[Professional README Guide](https://coding-boot-camp.github.io/full-stack/github/professional-readme-guide)
-
-[License Badges List](https://gist.github.com/qvil/5e3ed56c26d784e51424621119cc4028)
-
-[Starter Code](https://github.com/coding-boot-camp/potential-enigma)
-
-[Inquirer.prompt Issue](https://stackoverflow.com/questions/62860243/inquirer-prompt-exiting-without-an-answer)
+Contribution parameters in development.  See contact info below to find out more.
 
 ## Tests:
 
-N/A
+None Created Yet
 
 ## Questions:
 
-Visit Github repository: [Alathea23](https://github.com/alathea23/Rapid-READme-Renderer.git)  
-;
+We would love to hear from you! Visit Github repository: [](https://github.com//)  
+or Contact via Email: [](mailto:) with addition questions.
