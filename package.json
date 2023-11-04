@@ -1,0 +1,27 @@
+{
+  "name": "entering-employees-excellently",
+  "version": "1.0.0",
+  "description": "[How to create a Professional README](https://coding-boot-camp.github.io/full-stack/github/professional-readme-guide)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jenny Wannier",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.2.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alathea23/Rapid-READme-Renderer.git"
+  },
+  "keywords": [
+    "readme",
+    "generator"
+  ],
+  "bugs": {
+    "url": "https://github.com/alathea23/Rapid-READme-Renderer/issues"
+  },
+  "homepage": "https://github.com/alathea23/Rapid-READme-Renderer#readme"
+}
