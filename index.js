@@ -1,7 +1,15 @@
 //Setting up packages needed for this application
 const inquirer = require("inquirer");
 const fs = require("fs");
-const {} = require("./utils/Database_Queries.js");
+const {
+  addEmployee,
+  viewEmployees,
+  updateEmployee,
+  viewRoles,
+  addRole,
+  viewDepartments,
+  addDepartment,
+} = require("./utils/Database_Queries.js");
 
 const express = require("express");
 // Import and require mysql2
@@ -15,18 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
-const db = mysql.createConnection(
-  {
-    host: "localhost",
-    // MySQL username,
-    user: "root",
-    // MySQL password
-    password: "Remembrall23**",
-    database: "EmployeeTracker_db",
-  },
-  console.log(`Connected to the EmployeeTracker_db database.`)
-);
-
+const db = require("./config/index.js")
+/*
 //let answers = []
 //adding in dummy testing data to test functionality
 let dataD = {
@@ -82,7 +80,7 @@ function viewEmployees() {
 //updateEmployee (dataU)
 viewRoles();
 viewEmployees();
-
+*/ 
 //Creating an array of questions for user input
 function displayMenu() {
   let roles = db.query("SELECT title FROM roles");
@@ -110,7 +108,7 @@ function displayMenu() {
         type: "input",
         name: "first_name",
         message: "Employee first name?",
-        when: (answers) => answers.menuOption === "Add Employee",
+        when: (answers) => answers.task === "Add Employee",
         validate: (input) => {
           if (input.trim() === "") {
             return "Please enter a value.";
@@ -122,7 +120,7 @@ function displayMenu() {
         type: "input",
         name: "last_name",
         message: "Employee last name?",
-        when: (answers) => answers.menuOption === "Add Employee",
+        when: (answers) => answers.task === "Add Employee",
         validate: (input) => {
           if (input.trim() === "") {
             return "Please enter a value.";
@@ -134,21 +132,21 @@ function displayMenu() {
         type: "list",
         name: "role",
         message: "Employee role?",
-        when: (answers) => answers.menuOption === "Add Employee",
+        when: (answers) => answers.task  === "Add Employee",
         choices: [roles],
       },
       {
         type: "list",
         name: "role",
         message: "Manager?",
-        when: (answers) => answers.menuOption === "Add Employee",
+        when: (answers) => answers.task  === "Add Employee",
         choices: [employees],
       },
       {
         type: "input",
         name: "Department_name",
         message: "Department name?",
-        when: (answers) => answers.menuOption === "Add Department",
+        when: (answers) => answers.task  === "Add Department",
         validate: (input) => {
           if (input.trim() === "") {
             return "Please enter a value.";
@@ -160,7 +158,7 @@ function displayMenu() {
         type: "input",
         name: "Title",
         message: "Title of role?",
-        when: (answers) => answers.menuOption === "Add Role",
+        when: (answers) => answers.task  === "Add Role",
         validate: (input) => {
           if (input.trim() === "") {
             return "Please enter a value.";
@@ -172,7 +170,7 @@ function displayMenu() {
         type: "input",
         name: "Salary",
         message: "Salary?",
-        when: (answers) => answers.menuOption === "Add Role",
+        when: (answers) => answers.task === "Add Role",
         validate: (input) => {
           if (input.trim() === "") {
             return "Please enter a value.";
@@ -184,55 +182,61 @@ function displayMenu() {
         type: "list",
         name: "Role_Department",
         message: "Department?",
-        when: (answers) => answers.menuOption === "Add Role",
+        when: (answers) => answers.task === "Add Role",
         choices: [departments],
       },
       {
         type: "list",
         name: "updatedRole",
         message: "?",
-        when: (answers) => answers.menuOption === "Add Role",
+        when: (answers) => answers.task === "Add Role",
         choices: [roles],
       },
       {
         type: "list",
         name: "employeeUpdating",
         message: "?",
-        when: (answers) => answers.menuOption === "Add Role",
+        when: (answers) => answers.task  === "Add Role",
         choices: [employees],
       },
     ])
     .then((answers) => {
-      const selectedOption = answers.menuOption;
+      console.log(answers);
+      const selectedOption = answers.task ;
 
       // Handle the selected option
       switch (selectedOption) {
         case "Add Employee":
-          queries.addEmployee;
+          addEmployee(answers);
           console.log("Input 1:", answers.input1);
           break;
         case "View Employees":
-            queries.viewEmployees
+          viewEmployees(answers);
           console.log("You selected Option 2");
           console.log("Input 2:", answers.input2);
           break;
         case "View Role":
+          viewRoles(answers);
           console.log("You selected Option 1");
           console.log("Input 1:", answers.input1);
           break;
         case "Add Roles":
+          addRole(answers);
           console.log("You selected Option 2");
           console.log("Input 2:", answers.input2);
           break;
         case "View Departments":
+          viewDepartments(answers);
           console.log("You selected Option 1");
           console.log("Input 1:", answers.input1);
           break;
         case "Add Departments":
+          addDepartment(answers);
           console.log("You selected Option 2");
           console.log("Input 2:", answers.input2);
           break;
-          case "Update Role":
+        case "Update Role":
+          updateEmployee(answers);
           console.log("You selected Option 2");
           console.log("Input 2:", answers.input2);
           break;
@@ -248,7 +252,7 @@ function displayMenu() {
 
 // Start the menu
 displayMenu();
-
+/*
 //function to write output to README file
 function writeFile(answers) {
   fileName = answers.title + "README.md";
@@ -272,3 +276,4 @@ async function init() {
 
 // Function call to initialize app
 init();
+*/
