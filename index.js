@@ -11,7 +11,19 @@ const {
   addRole,
   viewDepartments,
   addDepartment,
+  getRoles,
+  getEmployees,
+  getDepartments,
+  fullEmployeeData,
+  quit
 } = require("./utils/Database_Queries.js");
+
+const {
+    newEmployeeQuestions,
+    newRoleQuestions,
+    updateEmployeeQuestions,
+    newDepartmentQuestions,
+} = require("./utils/inquirerSubQuestions.js");
 
 const express = require("express");
 // Import and require mysql2
@@ -54,91 +66,9 @@ let dataU = {
   employee_id: 8,
 };
 
-function addEmployee(data) {
-  db.query(
-    `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${data.first_name}", "${data.last_name}", ${data.role_id}, NULL `
-  );
-  db.query("SELECT * FROM employee", function (err, results) {
-    console.log(results);
-  });
-}
-
-function updateEmployee(data) {
-  db.query(
-    `UPDATE employee SET role_id = ${data.role_id} WHERE id = ${data.employee_id};`
-  );
-  db.query(
-    "SELECT * FROM employee WHERE id=?",
-    data.employee_id,
-    function (err, results) {
-      console.log(results);
-    }
-  );
-}
-
-function viewRoles(data) {
-  db.query("SELECT title FROM roles", function (err, results) {
-    console.log(results);
-    const roles = results;
-  });
-}
-
-function viewEmployees() {
-  db.query(
-    "SELECT first_name, last_name FROM employee",
-    function (err, results) {
-      console.log(results);
-    }
-  );
-}
-//addEmployee(dataD)
-//updateEmployee (dataU)
-viewRoles();
-viewEmployees();
-*/ 
-/*
-let roles = []
-
-function viewRolesTest(data) {
-    db.query("SELECT title FROM roles", function (err, results) {
-      //console.log(results);
-      const rolesRaw = results
-      roles = rolesRaw.title;
-    });
-  }
-viewRolesTest()
-console.log(roles)
-
-async function getRoles() {
-    try {
-        const results = await db.query('SELECT title FROM roles');
-        const rolesRaw = results
-        return rolesRaw.title;
-      }
-      catch (error) {
-        throw error;
-      }
-  }
-
-  getRoles().then((title) => {
-    console.log(`title: ${title}`)
-  })
-  
-  getRoles((title) => {
-    console.log(`Username: ${title}`); // Access the variable inside the callback
-  });
-
 */
-
 //Creating an array of questions for user input
 function displayMenu() {
-  let roles = db.query("SELECT title FROM roles", function (err, results) {
-    //console.log(results)
-});
-   // const roles = rolesRaw.results
-  //  console.log(roles)
-  let employees = db.query("SELECT first_name, last_name FROM employee");
-  let departments = db.query("SELECT name FROM department");
 
   inquirer
     .prompt([
@@ -157,18 +87,6 @@ function displayMenu() {
         ],
         name: "task",
       },
-      {
-        type: "input",
-        name: "Department_name",
-        message: "Department name?",
-        when: (answers) => answers.task  === "Add Department",
-        validate: (input) => {
-          if (input.trim() === "") {
-            return "Please enter a value.";
-          }
-          return true;
-        },
-      },
     ])
     .then(async (answers) => {
       console.log(answers);
@@ -177,8 +95,10 @@ function displayMenu() {
       // Handle the selected option
       switch (selectedOption) {
         case "Add Employee":
-            await
-          await addEmployee(answers);
+          await newEmployeeQuestions(),
+          console.log(variableValues)
+          console.log(data)
+          await addEmployee(variableValues)
           console.log("Input 1:", answers.input1);
           break;
         case "View Employees":
