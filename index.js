@@ -1,6 +1,8 @@
 //Setting up packages needed for this application
 const inquirer = require("inquirer");
 const fs = require("fs");
+const util = require('util');
+
 const {
   addEmployee,
   viewEmployees,
@@ -23,7 +25,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
-const db = require("./config/index.js")
+const db = mysql.createConnection(
+    {
+      host: "localhost",
+      // MySQL username,
+      user: 'root',
+      // MySQL password
+      password: 'Remembrall23**',
+      database: 'EmployeeTracker_db',
+    },
+    console.log(`Connected to the EmployeeTracker_db database.`)
+  );
+
+  const query = util.promisify(db.query).bind(db);
 /*
 //let answers = []
 //adding in dummy testing data to test functionality
@@ -81,9 +95,47 @@ function viewEmployees() {
 viewRoles();
 viewEmployees();
 */ 
+/*
+let roles = []
+
+function viewRolesTest(data) {
+    db.query("SELECT title FROM roles", function (err, results) {
+      //console.log(results);
+      const rolesRaw = results
+      roles = rolesRaw.title;
+    });
+  }
+viewRolesTest()
+console.log(roles)
+
+async function getRoles() {
+    try {
+        const results = await db.query('SELECT title FROM roles');
+        const rolesRaw = results
+        return rolesRaw.title;
+      }
+      catch (error) {
+        throw error;
+      }
+  }
+
+  getRoles().then((title) => {
+    console.log(`title: ${title}`)
+  })
+  
+  getRoles((title) => {
+    console.log(`Username: ${title}`); // Access the variable inside the callback
+  });
+
+*/
+
 //Creating an array of questions for user input
 function displayMenu() {
-  let roles = db.query("SELECT title FROM roles");
+  let roles = db.query("SELECT title FROM roles", function (err, results) {
+    //console.log(results)
+});
+   // const roles = rolesRaw.results
+  //  console.log(roles)
   let employees = db.query("SELECT first_name, last_name FROM employee");
   let departments = db.query("SELECT name FROM department");
 

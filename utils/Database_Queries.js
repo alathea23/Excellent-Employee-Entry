@@ -1,18 +1,20 @@
-function byID(data) {
-  async (req, res) => {
-    try {
-      const dbBookData = await Book.findByPk(req.params.id, {});
 
-      const book = dbBookData.get({ plain: true });
-      res.render("book", { book });
-    } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
-    }
-  };
-}
+const mysql = require("mysql2");
+const connection = mysql.createConnection(
+    {
+      host: "localhost",
+      // MySQL username,
+      user: 'root',
+      // MySQL password
+      password: 'Remembrall23**',
+      database: 'EmployeeTracker_db',
+    },
+    console.log(`Connected to the EmployeeTracker_db database.`)
+  );
 
-const db = require("./config/index.js")
+  connection.connect(function (err) {
+    if (err) throw err;
+  });
 
 function addEmployee(data) {
   db.query(
