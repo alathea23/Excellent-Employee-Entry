@@ -16,6 +16,7 @@ const {
 const express = require("express");
 // Import and require mysql2
 const mysql = require("mysql2");
+const { async } = require("rxjs");
 
 const PORT = process.env.PORT || 3004;
 const app = express();
@@ -158,44 +159,6 @@ function displayMenu() {
       },
       {
         type: "input",
-        name: "first_name",
-        message: "Employee first name?",
-        when: (answers) => answers.task === "Add Employee",
-        validate: (input) => {
-          if (input.trim() === "") {
-            return "Please enter a value.";
-          }
-          return true;
-        },
-      },
-      {
-        type: "input",
-        name: "last_name",
-        message: "Employee last name?",
-        when: (answers) => answers.task === "Add Employee",
-        validate: (input) => {
-          if (input.trim() === "") {
-            return "Please enter a value.";
-          }
-          return true;
-        },
-      },
-      {
-        type: "list",
-        name: "role",
-        message: "Employee role?",
-        when: (answers) => answers.task  === "Add Employee",
-        choices: [roles],
-      },
-      {
-        type: "list",
-        name: "role",
-        message: "Manager?",
-        when: (answers) => answers.task  === "Add Employee",
-        choices: [employees],
-      },
-      {
-        type: "input",
         name: "Department_name",
         message: "Department name?",
         when: (answers) => answers.task  === "Add Department",
@@ -206,60 +169,16 @@ function displayMenu() {
           return true;
         },
       },
-      {
-        type: "input",
-        name: "Title",
-        message: "Title of role?",
-        when: (answers) => answers.task  === "Add Role",
-        validate: (input) => {
-          if (input.trim() === "") {
-            return "Please enter a value.";
-          }
-          return true;
-        },
-      },
-      {
-        type: "input",
-        name: "Salary",
-        message: "Salary?",
-        when: (answers) => answers.task === "Add Role",
-        validate: (input) => {
-          if (input.trim() === "") {
-            return "Please enter a value.";
-          }
-          return true;
-        },
-      },
-      {
-        type: "list",
-        name: "Role_Department",
-        message: "Department?",
-        when: (answers) => answers.task === "Add Role",
-        choices: [departments],
-      },
-      {
-        type: "list",
-        name: "updatedRole",
-        message: "?",
-        when: (answers) => answers.task === "Add Role",
-        choices: [roles],
-      },
-      {
-        type: "list",
-        name: "employeeUpdating",
-        message: "?",
-        when: (answers) => answers.task  === "Add Role",
-        choices: [employees],
-      },
     ])
-    .then((answers) => {
+    .then(async (answers) => {
       console.log(answers);
       const selectedOption = answers.task ;
 
       // Handle the selected option
       switch (selectedOption) {
         case "Add Employee":
-          addEmployee(answers);
+            await
+          await addEmployee(answers);
           console.log("Input 1:", answers.input1);
           break;
         case "View Employees":
