@@ -1,4 +1,4 @@
-const dbQueryFunctions = require("./functions.js");
+const dbQueryFunctions = require("./Database_Queries");
 const inquirer = require("inquirer");
 
 function newEmployeeQuestions() {

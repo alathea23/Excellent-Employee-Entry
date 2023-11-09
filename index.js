@@ -16,14 +16,14 @@ const {
   getDepartments,
   fullEmployeeData,
   quit
-} = require("./utils/Database_Queries.js");
+} = require('./utils/Database_Queries.js');
 
 const {
     newEmployeeQuestions,
     newRoleQuestions,
     updateEmployeeQuestions,
     newDepartmentQuestions,
-} = require("./utils/inquirerSubQuestions.js");
+} = require('./utils/inquirerSubQuestions');
 
 const express = require("express");
 // Import and require mysql2
@@ -44,7 +44,7 @@ const db = mysql.createConnection(
       // MySQL username,
       user: 'root',
       // MySQL password
-      password: 'Remembrall23**',
+      password: '',
       database: 'EmployeeTracker_db',
     },
     console.log(`Connected to the EmployeeTracker_db database.`)
