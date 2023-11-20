@@ -11,7 +11,7 @@
   * [Usage](#usage)
   * [License](#license)
   * [Video Demo](#video-demo)
-  * [Contributing](#contributing)
+  * [Contributors](#contributors)
   * [Tests](#tests)
   * [Questions](#questions)
   
@@ -32,9 +32,9 @@ This application is covered under [MIT]((https://opensource.org/licenses/MIT))
 
 [Demo](./assets/EmployeeTrack_Demo.mov)
 
-## Contributing:
+## Contributors:
 
-Contribution parameters in development.  See contact info below to find out more.
+Jenny Wannier, Aryh1(classmate collaboration)
 
 ## Tests:
 
