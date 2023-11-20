@@ -1,6 +1,22 @@
 const dbQueryFunctions = require("./Database_Queries");
 const inquirer = require("inquirer");
 
+const {
+  addEmployee,
+  viewEmployees,
+  updateEmployee,
+  viewRoles,
+  addRole,
+  viewDepartments,
+  addDepartment,
+  getRoles,
+  getEmployees,
+  getDepartments,
+  fullEmployeeData,
+  quit
+} = require('./Database_Queries.js');
+
+
 function newEmployeeQuestions() {
   inquirer
     .prompt([
@@ -126,7 +142,7 @@ function updateEmployeeQuestions() {
         choices: () => dbQueryFunctions.getEmployees(),
         validate: (input) => {
           if (input.trim() === "") {
-            return "Please Select a Employee:";
+            return "Please Select an Employee:";
           }
           return true;
         },
@@ -147,8 +163,9 @@ function updateEmployeeQuestions() {
 
     .then(async (answers) => {
       console.log(answers);
-      const variableValues = answers;
-      return variableValues;
+      updateEmployee(answers);
+     // const variableValues = answers;
+    //  return variableValues;
     });
 }
 

@@ -1,7 +1,7 @@
 //Setting up packages needed for this application
 const inquirer = require("inquirer");
 const fs = require("fs");
-const util = require('util');
+const util = require("util");
 
 const {
   addEmployee,
@@ -15,15 +15,15 @@ const {
   getEmployees,
   getDepartments,
   fullEmployeeData,
-  quit
-} = require('./utils/Database_Queries.js');
+  quit,
+} = require("./utils/Database_Queries.js");
 
 const {
-    newEmployeeQuestions,
-    newRoleQuestions,
-    updateEmployeeQuestions,
-    newDepartmentQuestions,
-} = require('./utils/inquirerSubQuestions');
+  newEmployeeQuestions,
+  newRoleQuestions,
+  updateEmployeeQuestions,
+  newDepartmentQuestions,
+} = require("./utils/inquirerSubQuestions");
 
 const express = require("express");
 // Import and require mysql2
@@ -37,20 +37,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Connect to database
-const db = mysql.createConnection(
-    {
-      host: "localhost",
-      // MySQL username,
-      user: 'root',
-      // MySQL password
-      password: '',
-      database: 'EmployeeTracker_db',
-    },
-    console.log(`Connected to the EmployeeTracker_db database.`)
-  );
-
-  const query = util.promisify(db.query).bind(db);
+//node const query = util.promisify(db.query).bind(db);
 /*
 //let answers = []
 //adding in dummy testing data to test functionality
@@ -69,7 +56,6 @@ let dataU = {
 */
 //Creating an array of questions for user input
 function displayMenu() {
-
   inquirer
     .prompt([
       {
@@ -90,54 +76,189 @@ function displayMenu() {
     ])
     .then(async (answers) => {
       console.log(answers);
-      const selectedOption = answers.task ;
+      const selectedOption = answers.task;
 
       // Handle the selected option
       switch (selectedOption) {
         case "Add Employee":
-          await newEmployeeQuestions(),
-          console.log(variableValues)
-          console.log(data)
-          await addEmployee(variableValues)
-          console.log("Input 1:", answers.input1);
+          await inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "first_name",
+                message: "Employee first name?",
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please enter a value.";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "input",
+                name: "last_name",
+                message: "Employee last name?",
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please enter a value.";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "list",
+                name: "role_id",
+                message: "Employee role?",
+                choices: () => getRoles(),
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please Select a Role.";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "list",
+                name: "manager_id",
+                message: "Manager?",
+                choices: () => getEmployees(),
+              },
+            ])
+            .then(async (answers) => {
+              console.log(answers);
+              const variableValues = answers;
+              addEmployee(variableValues);
+              displayMenu();
+            });
           break;
         case "View Employees":
-          viewEmployees(answers);
-          console.log("You selected Option 2");
-          console.log("Input 2:", answers.input2);
+          viewEmployees();
+          console.log("You selected Option 2")
+          displayMenu();
           break;
-        case "View Role":
-          viewRoles(answers);
-          console.log("You selected Option 1");
-          console.log("Input 1:", answers.input1);
+        case "View Roles":
+          viewRoles();
+          console.log("You selected Option 1")
+          displayMenu();
           break;
-        case "Add Roles":
-          addRole(answers);
-          console.log("You selected Option 2");
-          console.log("Input 2:", answers.input2);
+        case "Add Role":
+          const departmentList = await getDepartments()
+          inquirer.prompt([
+              {
+                type: "input",
+                name: "title",
+                message: "Title of role?",
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please enter a value.";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "input",
+                name: "salary",
+                message: "Salary?",
+                validate: (input) => {
+                  if (isNaN(input) || input.trim() === "") {
+                    return "Please enter a valid salary (numeric value).";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "list",
+                name: "department_id",
+                message: "Department?",
+                choices: departmentList,
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please Enter a department.";
+                  }
+                  return true;
+                },
+              },
+            ])
+            .then(async (answers) => {
+              addRole(answers);
+              displayMenu();
+            });
           break;
         case "View Departments":
-          viewDepartments(answers);
-          console.log("You selected Option 1");
-          console.log("Input 1:", answers.input1);
+          viewDepartments();
+          //console.log("You selected Option 1")
+          displayMenu();
           break;
-        case "Add Departments":
-          addDepartment(answers);
-          console.log("You selected Option 2");
-          console.log("Input 2:", answers.input2);
+        case "Add Department":
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "name",
+                message: "Department Name?",
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please enter a value.";
+                  }
+                  return true;
+                },
+              },
+            ])
+            .then(async (answers) => {
+              addDepartment(answers);
+              displayMenu();
+            });
           break;
-        case "Update Role":
-          updateEmployee(answers);
-          console.log("You selected Option 2");
-          console.log("Input 2:", answers.input2);
+        case "Update Employee Role":
+          const employeeList = await getEmployees();
+          const employeeRoles = await getRoles();
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                name: "employee_id",
+                message: "Select an Employee:",
+                choices: employeeList,
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please Select an Employee:";
+                  }
+                  return true;
+                },
+              },
+              {
+                type: "list",
+                name: "role_id",
+                message: "Select a Role:",
+                choices: employeeRoles,
+                validate: (input) => {
+                  if (input.trim() === "") {
+                    return "Please Select a Role:";
+                  }
+                  return true;
+                },
+              },
+            ])
+
+            .then(async (answers) => {
+              console.log(answers);
+              updateEmployee(answers);
+              displayMenu();
+              // const variableValues = answers;
+              //  return variableValues;
+            });
+          //  updateEmployee(answers);
+          // console.log("You selected Option 2");
+          //console.log("Input 2:", answers.input2);
           break;
         case "Quit":
           console.log("Goodbye!");
+          console.log("^C")
           return;
       }
 
       // After handling the selected option, display the menu again
-      displayMenu();
+      // displayMenu();
     });
 }
 
